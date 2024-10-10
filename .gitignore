@@ -1,0 +1,15 @@
+# Ignore the virtual environment folder
+.venv/
+
+# Python cache files
+__pycache__/
+*.pyc
+
+# Ignore Streamlit cache
+.streamlit/
+
+# Ignore dataset files (if they're too large)
+*.csv
+
+# Ignore log files
+*.log

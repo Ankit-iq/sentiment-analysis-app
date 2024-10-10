@@ -23,7 +23,7 @@ stopwords_nltk = nltk.corpus.stopwords
 stop_words = stopwords_nltk.words('english')
 
 st.title('Sentiment Analysis on Textual Data')
-@st.cache_datagit
+@st.cache_data
 def load_data(train_file, val_file):
     train = pd.read_csv(train_file, header=None)
     val = pd.read_csv(val_file, header=None)

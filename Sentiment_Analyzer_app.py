@@ -16,7 +16,7 @@ except LookupError:
 try:
     nltk.data.find('tokenizers/punkt.zip')
 except LookupError:
-    nltk.download('punkt_tab')
+    nltk.download('punkt')
 
 # Load stopwords
 stopwords_nltk = nltk.corpus.stopwords

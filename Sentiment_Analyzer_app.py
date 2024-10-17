@@ -12,7 +12,6 @@ try:
     nltk.data.find('corpora/stopwords.zip')
 except LookupError:
     nltk.download('stopwords')
-
 try:
     nltk.data.find('tokenizers/punkt.zip')
 except LookupError:

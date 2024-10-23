@@ -2,82 +2,129 @@ import streamlit as st
 import pandas as pd
 import re
 import nltk
-import os
 import matplotlib.pyplot as plt
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score
 
-# Specify the directory containing the NLTK data
-nltk_data_dir = os.path.join(os.path.dirname(__file__), 'nltk_data')
+# Function to check and download NLTK resources
+def ensure_nltk_resources():
+    try:
+        nltk.data.find('tokenizers/punkt')
+    except LookupError:
+        nltk.download('punkt')
 
-# Set the NLTK data path
-nltk.data.path.append(nltk_data_dir)
+# Call the function to ensure resources are available
+ensure_nltk_resources()
 
-# Check if the punkt tokenizer is available
+# Check if nltk data is already downloaded
 try:
-    nltk.data.find('tokenizers/punkt')
+    nltk.data.find('corpora/stopwords')
 except LookupError:
-    st.error("Punkt tokenizer not found. Please ensure NLTK data is included in the project.")
+    nltk.download('stopwords')
 
 # Load stopwords
-try:
-    stop_words = nltk.corpus.stopwords.words('english')
-except LookupError:
-    nltk.download('stopwords', download_dir=nltk_data_dir)
-    stop_words = nltk.corpus.stopwords.words('english')
+from nltk.corpus import stopwords
 
-# CSS for styling
-st.markdown(
-    """
-    <style>
-    body {
-        background-color: #f0f0f0; /* Light background */
-        color: #333; /* Dark text */
-        font-family: 'Arial', sans-serif;
-    }
+stop_words = stopwords.words('english')
 
-    .main {
-        background-color: white;
-        padding: 20px;
-        border-radius: 15px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    }
+# Sidebar for theme selection
+theme = st.sidebar.selectbox("Select Theme", ["Light", "Dark"])
 
-    h1, h2, h3 {
-        color: #007acc; /* Blue color */
-    }
+# CSS for light theme
+light_theme = """
+<style>
+body {
+    background-color: #f0f0f0; /* Light background */
+    color: #333; /* Dark text */
+    font-family: 'Arial', sans-serif;
+}
 
-    .stTextInput {
-        margin-bottom: 20px;
-        border-radius: 5px;
-        border: 1px solid #007acc; /* Blue border */
-        background-color: #f7f7f7;
-    }
+.main {
+    background-color: white;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
 
-    .stTextInput:focus {
-        border-color: #005f99; /* Darker blue */
-        box-shadow: 0 0 5px rgba(0, 95, 153, 0.8); /* Focus effect */
-    }
+h1, h2, h3 {
+    color: #007acc; /* Blue color */
+}
 
-    .stButton {
-        background-color: #007acc; /* Blue button */
-        color: white; /* White text */
-        border-radius: 5px;
-    }
+.stTextInput > div > input {
+    margin-bottom: 20px;
+    border-radius: 5px;
+    border: 1px solid #007acc; /* Blue border */
+    background-color: #f7f7f7;
+    color: black; /* Black font color */
+}
 
-    .stButton:hover {
-        background-color: #005f99; /* Darker blue on hover */
-    }
+.stTextInput:focus {
+    border-color: #005f99; /* Darker blue */
+    box-shadow: 0 0 5px rgba(0, 95, 153, 0.8); /* Focus effect */
+}
 
-    footer {
-        text-align: center;
-        color: #007acc; /* Blue footer */
-    }
-    </style>
-    """, unsafe_allow_html=True
-)
+.stButton {
+    border-radius: 5px;
+}
+
+.footer {
+    text-align: center;
+    color: #007acc; /* Blue footer */
+}
+</style>
+"""
+
+# CSS for dark theme
+dark_theme = """
+<style>
+body {
+    background-color: #333; /* Dark background */
+    color: #f0f0f0; /* Light text */
+    font-family: 'Arial', sans-serif;
+}
+
+.main {
+    background-color: #444; /* Darker card background */
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+h1, h2, h3 {
+    color: #007acc; /* Blue color */
+}
+
+.stTextInput > div > input {
+    margin-bottom: 20px;
+    border-radius: 5px;
+    border: 1px solid #007acc; /* Blue border */
+    background-color: #555; /* Dark input background */
+    color: white; /* White font color */
+}
+
+.stTextInput:focus {
+    border-color: #005f99; /* Darker blue */
+    box-shadow: 0 0 5px rgba(0, 95, 153, 0.8); /* Focus effect */
+}
+
+.stButton {
+    border-radius: 5px;
+}
+
+.footer {
+    text-align: center;
+    color: #007acc; /* Blue footer */
+}
+</style>
+"""
+
+# Apply the selected theme
+if theme == "Light":
+    st.markdown(light_theme, unsafe_allow_html=True)
+else:
+    st.markdown(dark_theme, unsafe_allow_html=True)
 
 st.title('Sentiment Analysis on Twitter Data')
 st.sidebar.header('Upload CSV Files')
@@ -111,9 +158,9 @@ if train_file and val_file:
     st.subheader('Sentiment Distribution in Training Data')
     fig, ax = plt.subplots()
     sentiment_counts.plot(kind='bar', ax=ax, color='blue', edgecolor='black')
-    ax.set_title('Sentiment Counts', color='black')
-    ax.set_xlabel('Sentiment Types', color='black')
-    ax.set_ylabel('Counts', color='black')
+    ax.set_title('Sentiment Counts', color='black' if theme == "Light" else 'white')
+    ax.set_xlabel('Sentiment Types', color='black' if theme == "Light" else 'white')
+    ax.set_ylabel('Counts', color='black' if theme == "Light" else 'white')
     plt.xticks(rotation=45)
     st.pyplot(fig)
 
@@ -161,11 +208,8 @@ if train_file and val_file:
         model_ngram = LogisticRegression(C=0.9, solver="liblinear", max_iter=1500)
         model_ngram.fit(X_train_bow, reviews_train['type'])
         test_pred_ngram = model_ngram.predict(X_test_bow)
-        accuracy_ngram = accuracy_score(reviews_test['type'], test_pred_ngram) * 100
-        st.write(f"Test Data Accuracy with n-grams: {accuracy_ngram:.2f}%")
-        val_pred_ngram = model_ngram.predict(X_val_bow)
-        val_accuracy_ngram = accuracy_score(y_val_bow, val_pred_ngram) * 100
-        st.write(f"Validation Data Accuracy with n-grams: {val_accuracy_ngram:.2f}%")
+        ngram_accuracy = accuracy_score(reviews_test['type'], test_pred_ngram) * 100
+        st.write(f"N-gram Test Data Accuracy: {ngram_accuracy:.2f}%")
 
-    # Display a footer
-    st.markdown("<footer>Created by Ankit Kumar Bhuyan</footer>", unsafe_allow_html=True)
+    # Footer
+    st.markdown("<div class='footer'>Made with ❤️ by Ankit Kumar Bhuyan</div>", unsafe_allow_html=True)

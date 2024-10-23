@@ -26,7 +26,6 @@ except LookupError:
 
 # Load stopwords
 from nltk.corpus import stopwords
-
 stop_words = stopwords.words('english')
 
 # Sidebar for theme selection
@@ -40,18 +39,15 @@ body {
     color: #333; /* Dark text */
     font-family: 'Arial', sans-serif;
 }
-
 .main {
     background-color: white;
     padding: 20px;
     border-radius: 15px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
-
 h1, h2, h3 {
     color: #007acc; /* Blue color */
 }
-
 .stTextInput > div > input {
     margin-bottom: 20px;
     border-radius: 5px;
@@ -59,16 +55,10 @@ h1, h2, h3 {
     background-color: #f7f7f7;
     color: black; /* Black font color */
 }
-
 .stTextInput:focus {
     border-color: #005f99; /* Darker blue */
     box-shadow: 0 0 5px rgba(0, 95, 153, 0.8); /* Focus effect */
 }
-
-.stButton {
-    border-radius: 5px;
-}
-
 .footer {
     text-align: center;
     color: #007acc; /* Blue footer */
@@ -84,18 +74,15 @@ body {
     color: #f0f0f0; /* Light text */
     font-family: 'Arial', sans-serif;
 }
-
 .main {
     background-color: #444; /* Darker card background */
     padding: 20px;
     border-radius: 15px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 }
-
 h1, h2, h3 {
     color: #007acc; /* Blue color */
 }
-
 .stTextInput > div > input {
     margin-bottom: 20px;
     border-radius: 5px;
@@ -103,16 +90,10 @@ h1, h2, h3 {
     background-color: #555; /* Dark input background */
     color: white; /* White font color */
 }
-
 .stTextInput:focus {
     border-color: #005f99; /* Darker blue */
     box-shadow: 0 0 5px rgba(0, 95, 153, 0.8); /* Focus effect */
 }
-
-.stButton {
-    border-radius: 5px;
-}
-
 .footer {
     text-align: center;
     color: #007acc; /* Blue footer */
@@ -211,5 +192,5 @@ if train_file and val_file:
         ngram_accuracy = accuracy_score(reviews_test['type'], test_pred_ngram) * 100
         st.write(f"N-gram Test Data Accuracy: {ngram_accuracy:.2f}%")
 
-    # Footer
-    st.markdown("<div class='footer'>Made with ❤️ by Ankit Kumar Bhuyan</div>", unsafe_allow_html=True)
+# Footer
+st.markdown("<div class='footer'>Made with ❤️ by Ankit Kumar Bhuyan</div>", unsafe_allow_html=True)

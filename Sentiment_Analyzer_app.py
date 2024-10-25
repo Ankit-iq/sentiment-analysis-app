@@ -2,7 +2,6 @@ import streamlit as st
 import pandas as pd
 import re
 import nltk
-import matplotlib.pyplot as plt
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
@@ -31,10 +30,6 @@ stop_words = stopwords.words('english')
 # Sidebar for theme selection
 theme = st.sidebar.selectbox("Select Theme", ["Light", "Dark"])
 
-# Apply the selected theme (Temporarily Commented Out)
-# st.markdown(light_theme, unsafe_allow_html=True)  # Commented Out
-# st.markdown(dark_theme, unsafe_allow_html=True)   # Commented Out
-
 st.title('Sentiment Analysis on Twitter Data')
 st.sidebar.header('Upload CSV Files')
 
@@ -61,17 +56,6 @@ if uploaded_train_file and uploaded_val_file:
 
     train_data = preprocess_text(training_df)
     val_data = preprocess_text(validation_df)
-
-    # Visualize sentiment distribution
-    sentiment_counts = train_data['type'].value_counts()
-    st.subheader('Sentiment Distribution in Training Data')
-    fig, ax = plt.subplots()
-    sentiment_counts.plot(kind='bar', ax=ax, color='blue', edgecolor='black')
-    ax.set_title('Sentiment Counts', color='black' if theme == "Light" else 'white')
-    ax.set_xlabel('Sentiment Types', color='black' if theme == "Light" else 'white')
-    ax.set_ylabel('Counts', color='black' if theme == "Light" else 'white')
-    plt.xticks(rotation=45)
-    st.pyplot(fig)
 
     # Tokenize and prepare data for model
     bow_counts = CountVectorizer(stop_words=stop_words, ngram_range=(1, 1))
@@ -119,4 +103,4 @@ if uploaded_train_file and uploaded_val_file:
         st.write(f"N-gram Test Data Accuracy: {ngram_accuracy:.2f}%")
 
 # Footer
-st.markdown("<div class='footer'>Made by Ankit Kumar Bhuyan, Rajesh Kumar Panda and Bishnu Prasad Panda</div>", unsafe_allow_html=True)
+st.markdown("<div class='footer'>Made by Ankit Kumar Bhuyan, Rajesh Kumar Panda, and Bishnu Prasad Panda</div>", unsafe_allow_html=True)

@@ -2,6 +2,7 @@ import streamlit as st
 import pickle
 import nltk
 from nltk.corpus import stopwords
+from nltk.tokenize import word_tokenize
 
 # Function to ensure NLTK resources are available
 def ensure_nltk_resources():
@@ -21,7 +22,7 @@ def ensure_nltk_resources():
 ensure_nltk_resources()
 
 # Load stopwords
-stop_words = stopwords.words('english')
+stop_words = set(stopwords.words('english'))
 
 # Load model3
 with open('model3.pkl', 'rb') as file:
@@ -32,15 +33,23 @@ with open('bow_counts_model3.pkl', 'rb') as file:
     bow_counts_model3 = pickle.load(file)
 
 # Streamlit app title
-st.title("Sentiment Analysis using Logistic")
+st.title("Sentiment Analysis using Logistic Regression")
 
 # User input for prediction
 user_input = st.text_area("Enter a tweet to classify:")
 
 if st.button("Analyze"):
     if user_input:
-        # Transform the user input using bow_counts_model3
-        user_input_bow = bow_counts_model3.transform([user_input])
+        # Preprocess the user input
+        # Tokenize
+        tokens = word_tokenize(user_input.lower())
+        # Remove stopwords
+        filtered_tokens = [word for word in tokens if word not in stop_words]
+        # Join tokens back into a string
+        preprocessed_input = ' '.join(filtered_tokens)
+
+        # Transform the preprocessed user input using bow_counts_model3
+        user_input_bow = bow_counts_model3.transform([preprocessed_input])
 
         # Prediction
         prediction = model3.predict(user_input_bow)[0]

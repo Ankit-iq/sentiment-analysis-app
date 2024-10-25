@@ -1,9 +1,26 @@
 import streamlit as st
 import pickle
 import nltk
+from nltk.corpus import stopwords
 
-# Download NLTK punkt tokenizer
-nltk.download('punkt', quiet=True)
+def ensure_nltk_resources():
+    # Ensure punkt tokenizer is available
+    try:
+        nltk.data.find('tokenizers/punkt')
+    except LookupError:
+        nltk.download('punkt', quiet=True)
+
+    # Ensure stopwords are available
+    try:
+        nltk.data.find('corpora/stopwords')
+    except LookupError:
+        nltk.download('stopwords', quiet=True)
+
+# Call the function to ensure resources are available
+ensure_nltk_resources()
+
+# Load stopwords
+stop_words = stopwords.words('english')
 
 # Load model3
 with open('model3.pkl', 'rb') as file:

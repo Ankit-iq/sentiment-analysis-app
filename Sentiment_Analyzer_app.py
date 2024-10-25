@@ -3,18 +3,17 @@ import pickle
 import nltk
 from nltk.corpus import stopwords
 
+# Function to ensure NLTK resources are available
 def ensure_nltk_resources():
-    # Ensure punkt tokenizer is available
     try:
         nltk.data.find('tokenizers/punkt')
     except LookupError:
-        nltk.download('punkt', quiet=True)
+        nltk.download('punkt')
 
-    # Ensure stopwords are available
     try:
         nltk.data.find('corpora/stopwords')
     except LookupError:
-        nltk.download('stopwords', quiet=True)
+        nltk.download('stopwords')
 
 # Call the function to ensure resources are available
 ensure_nltk_resources()
@@ -33,74 +32,23 @@ with open('bow_counts_model3.pkl', 'rb') as file:
 # Streamlit app title
 st.title("Sentiment Analysis using Logistic")
 
-# Add custom CSS for styling
-st.markdown(
-    """
-    <style>
-    /* Style for the button */
-    .styled-button {
-        background-color: orange; /* Button color */
-        border: 2px solid blue; /* Button border color */
-        color: white;
-        padding: 10px 20px;
-        font-size: 16px;
-        cursor: pointer;
-        border-radius: 5px;
-        transition: all 0.3s ease;
-    }
-
-    .styled-button:hover {
-        background-color: blue; /* Change color on hover */
-    }
-
-    /* Center the title */
-    h1 {
-        text-align: center;
-    }
-
-    /* Style for the text area */
-    textarea {
-        display: block;
-        margin: 0 auto;
-        width: 80%;
-        border: 2px solid blue; /* Text area border color */
-        border-radius: 5px;
-        padding: 10px;
-        font-size: 16px;
-    }
-
-    /* Center the button container */
-    .button-container {
-        display: flex;
-        justify-content: center;
-        margin-top: 20px;
-    }
-    </style>
-    """,
-    unsafe_allow_html=True
-)
-
 # User input for prediction
 user_input = st.text_area("Enter a tweet to classify:")
 
-# Create a button to analyze the input
 if st.button("Analyze"):
-    # Check if user input is provided
-    if user_input.strip() == "":
-        st.warning("Please enter a tweet to classify.")
+    # Transform the user input using bow_counts_model3
+    user_input_bow = bow_counts_model3.transform([user_input])
+
+    # Prediction
+    prediction = model3.predict(user_input_bow)[0]
+
+    # Display the prediction result
+    st.write(f"The sentiment of the input is: {prediction}")
+
+# Optional: Add feedback feature
+feedback = st.text_input("Provide feedback on the prediction (optional):")
+if st.button("Submit Feedback"):
+    if feedback:
+        st.write("Thank you for your feedback!")
     else:
-        # Transform the user input using bow_counts_model3
-        user_input_bow = bow_counts_model3.transform([user_input])
-
-        # Prediction
-        prediction = model3.predict(user_input_bow)[0]
-
-        # Display the prediction result
-        st.write(f"The sentiment of the input is: **{prediction}**")
-
-        # Feedback section
-        feedback = st.radio("Do you agree with this sentiment?", ("Yes", "No"))
-        if st.button("Submit Feedback"):
-            # Store the feedback (e.g., in a file or database)
-            # For demonstration, just showing a message
-            st.success(f"Feedback received: {feedback}")
+        st.write("No feedback provided.")

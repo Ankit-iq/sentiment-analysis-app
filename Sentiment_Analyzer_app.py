@@ -1,5 +1,9 @@
 import streamlit as st
 import pickle
+import nltk
+
+# Download NLTK punkt tokenizer
+nltk.download('punkt', quiet=True)
 
 # Load model3
 with open('model3.pkl', 'rb') as file:

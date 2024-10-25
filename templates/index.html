@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sentiment Analysis using Logistic</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 20px;
+            background-color: #f0f0f0; /* Default light mode */
+            transition: background-color 0.3s;
+        }
+        .dark-mode {
+            background-color: #333;
+            color: #fff;
+        }
+        .styled-button {
+            background-color: orange;
+            border: 2px solid blue;
+            color: white;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+        .styled-button:hover {
+            background-color: blue;
+        }
+        textarea {
+            display: block;
+            margin: 0 auto;
+            width: 80%;
+            border: 2px solid blue;
+            border-radius: 5px;
+            padding: 10px;
+            font-size: 16px;
+        }
+        .emoji {
+            font-size: 30px;
+            cursor: pointer;
+            margin: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Sentiment Analysis using Logistic</h1>
+
+    <!-- Theme Toggle Button -->
+    <button class="styled-button" id="theme-toggle">Toggle Theme</button>
+
+    <form action="/analyze" method="post">
+        <textarea name="tweet" rows="5" placeholder="Enter a tweet to classify:">{{ tweet }}</textarea>
+        <br>
+        <button type="submit" class="styled-button">Analyze</button>
+    </form>
+
+    {% if prediction %}
+        <h2>The sentiment of the input is: <strong>{{ prediction }}</strong></h2>
+
+        <!-- Emoji Reactions -->
+        <div>
+            <span class="emoji" onclick="react('😊')">😊</span>
+            <span class="emoji" onclick="react('😐')">😐</span>
+            <span class="emoji" onclick="react('😞')">😞</span>
+        </div>
+        <p id="reaction-message"></p>
+    {% endif %}
+
+    <script>
+        // Theme Toggle Functionality
+        const toggleButton = document.getElementById('theme-toggle');
+        toggleButton.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+            // Save theme preference
+            localStorage.setItem('theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light');
+        });
+
+        // Load saved theme
+        window.onload = () => {
+            if (localStorage.getItem('theme') === 'dark') {
+                document.body.classList.add('dark-mode');
+            }
+        };
+
+        // Emoji Reaction Functionality
+        function react(emoji) {
+            document.getElementById('reaction-message').innerText = `You reacted with: ${emoji}`;
+        }
+    </script>
+</body>
+</html>

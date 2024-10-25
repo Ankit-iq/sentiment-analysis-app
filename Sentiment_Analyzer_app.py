@@ -156,13 +156,13 @@ if train_file and val_file:
 
     test_pred = model.predict(X_test_bow)
     accuracy = accuracy_score(reviews_test['type'], test_pred) * 100
-    st.write(f"Test Data Accuracy: {accuracy:.2f}%")
+
 
     X_val_bow = bow_counts.transform(val_data["lower"])
     y_val_bow = val_data['type']
     val_pred = model.predict(X_val_bow)
     val_accuracy = accuracy_score(y_val_bow, val_pred) * 100
-    st.write(f"Validation Data Accuracy: {val_accuracy:.2f}%")
+
 
     # User input for prediction
     st.header('Try Sentiment Classification')
@@ -193,4 +193,4 @@ if train_file and val_file:
         st.write(f"N-gram Test Data Accuracy: {ngram_accuracy:.2f}%")
 
 # Footer
-st.markdown("<div class='footer'>Made with ❤️ by Ankit Kumar Bhuyan</div>", unsafe_allow_html=True)
+st.markdown("<div class='footer'>Made by Ankit Kumar Bhuyan, Rajesh Kumar Panda and Bishnu Prasad Panda</div>", unsafe_allow_html=True)

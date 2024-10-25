@@ -5,11 +5,13 @@ from nltk.corpus import stopwords
 
 # Function to ensure NLTK resources are available
 def ensure_nltk_resources():
+    # Check for 'punkt' tokenizer
     try:
         nltk.data.find('tokenizers/punkt')
     except LookupError:
         nltk.download('punkt')
 
+    # Check for 'stopwords' corpus
     try:
         nltk.data.find('corpora/stopwords')
     except LookupError:
@@ -36,14 +38,17 @@ st.title("Sentiment Analysis using Logistic")
 user_input = st.text_area("Enter a tweet to classify:")
 
 if st.button("Analyze"):
-    # Transform the user input using bow_counts_model3
-    user_input_bow = bow_counts_model3.transform([user_input])
+    if user_input:
+        # Transform the user input using bow_counts_model3
+        user_input_bow = bow_counts_model3.transform([user_input])
 
-    # Prediction
-    prediction = model3.predict(user_input_bow)[0]
+        # Prediction
+        prediction = model3.predict(user_input_bow)[0]
 
-    # Display the prediction result
-    st.write(f"The sentiment of the input is: {prediction}")
+        # Display the prediction result
+        st.write(f"The sentiment of the input is: {prediction}")
+    else:
+        st.write("Please enter a tweet to classify.")
 
 # Optional: Add feedback feature
 feedback = st.text_input("Provide feedback on the prediction (optional):")

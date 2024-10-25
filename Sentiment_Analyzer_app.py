@@ -31,99 +31,27 @@ stop_words = stopwords.words('english')
 # Sidebar for theme selection
 theme = st.sidebar.selectbox("Select Theme", ["Light", "Dark"])
 
-# CSS for light theme
-light_theme = """
-<style>
-body {
-    background-color: #f0f0f0; /* Light background */
-    color: #333; /* Dark text */
-    font-family: 'Arial', sans-serif;
-}
-.main {
-    background-color: white;
-    padding: 20px;
-    border-radius: 15px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-h1, h2, h3 {
-    color: #007acc; /* Blue color */
-}
-.stTextInput > div > input {
-    margin-bottom: 20px;
-    border-radius: 5px;
-    border: 1px solid #007acc; /* Blue border */
-    background-color: #f7f7f7;
-    color: black; /* Black font color */
-}
-.stTextInput:focus {
-    border-color: #005f99; /* Darker blue */
-    box-shadow: 0 0 5px rgba(0, 95, 153, 0.8); /* Focus effect */
-}
-.footer {
-    text-align: center;
-    color: #007acc; /* Blue footer */
-}
-</style>
-"""
-
-# CSS for dark theme
-dark_theme = """
-<style>
-body {
-    background-color: #333; /* Dark background */
-    color: #f0f0f0; /* Light text */
-    font-family: 'Arial', sans-serif;
-}
-.main {
-    background-color: #444; /* Darker card background */
-    padding: 20px;
-    border-radius: 15px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-}
-h1, h2, h3 {
-    color: #007acc; /* Blue color */
-}
-.stTextInput > div > input {
-    margin-bottom: 20px;
-    border-radius: 5px;
-    border: 1px solid #007acc; /* Blue border */
-    background-color: #555; /* Dark input background */
-    color: white; /* White font color */
-}
-.stTextInput:focus {
-    border-color: #005f99; /* Darker blue */
-    box-shadow: 0 0 5px rgba(0, 95, 153, 0.8); /* Focus effect */
-}
-.footer {
-    text-align: center;
-    color: #007acc; /* Blue footer */
-}
-</style>
-"""
-
-# Apply the selected theme
-if theme == "Light":
-    st.markdown(light_theme, unsafe_allow_html=True)
-else:
-    st.markdown(dark_theme, unsafe_allow_html=True)
+# Apply the selected theme (Temporarily Commented Out)
+# st.markdown(light_theme, unsafe_allow_html=True)  # Commented Out
+# st.markdown(dark_theme, unsafe_allow_html=True)   # Commented Out
 
 st.title('Sentiment Analysis on Twitter Data')
 st.sidebar.header('Upload CSV Files')
 
 @st.cache_data()
-def load_data(train_file, val_file):
-    train = pd.read_csv(train_file, header=None)
-    val = pd.read_csv(val_file, header=None)
-    return train, val
+def load_data(training_csv, validation_csv):
+    training_data = pd.read_csv(training_csv, header=None)
+    validation_data = pd.read_csv(validation_csv, header=None)
+    return training_data, validation_data
 
 # File uploader for train and validation data
-train_file = st.sidebar.file_uploader("Upload Training CSV", type=["csv"])
-val_file = st.sidebar.file_uploader("Upload Validation CSV", type=["csv"])
+uploaded_train_file = st.sidebar.file_uploader("Upload Training CSV", type=["csv"])
+uploaded_val_file = st.sidebar.file_uploader("Upload Validation CSV", type=["csv"])
 
-if train_file and val_file:
-    train, val = load_data(train_file, val_file)
-    train.columns = ['id', 'information', 'type', 'text']
-    val.columns = ['id', 'information', 'type', 'text']
+if uploaded_train_file and uploaded_val_file:
+    training_df, validation_df = load_data(uploaded_train_file, uploaded_val_file)
+    training_df.columns = ['id', 'information', 'type', 'text']
+    validation_df.columns = ['id', 'information', 'type', 'text']
 
     def preprocess_text(df):
         df = df.copy()  # Create a copy to avoid modifying the original DataFrame
@@ -131,8 +59,8 @@ if train_file and val_file:
         df["lower"] = df["lower"].apply(lambda x: re.sub('[^A-Za-z0-9 ]+', ' ', str(x)))
         return df
 
-    train_data = preprocess_text(train)
-    val_data = preprocess_text(val)
+    train_data = preprocess_text(training_df)
+    val_data = preprocess_text(validation_df)
 
     # Visualize sentiment distribution
     sentiment_counts = train_data['type'].value_counts()
@@ -157,12 +85,10 @@ if train_file and val_file:
     test_pred = model.predict(X_test_bow)
     accuracy = accuracy_score(reviews_test['type'], test_pred) * 100
 
-
     X_val_bow = bow_counts.transform(val_data["lower"])
     y_val_bow = val_data['type']
     val_pred = model.predict(X_val_bow)
     val_accuracy = accuracy_score(y_val_bow, val_pred) * 100
-
 
     # User input for prediction
     st.header('Try Sentiment Classification')

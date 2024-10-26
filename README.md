@@ -51,7 +51,7 @@ This project is a web application that performs sentiment analysis on user-provi
 The application uses a pre-trained Logistic Regression model to classify the sentiment of tweets. When a user submits a tweet, the following happens:
 1. The tweet is transformed into a Bag-of-Words representation.
 2. The transformed data is passed to the model for prediction.
-3. The sentiment (e.g., Positive, Neutral, Negative) is displayed on the screen along with emoji reaction options.
+3. The sentiment (e.g., Positive, Neutral, Negative, Irrelevant) is displayed on the screen along with emoji reaction options.
 
 ## Contributing
 Contributions are welcome! If you have suggestions for improvements or want to report a bug, please create an issue or submit a pull request.

@@ -1,6 +1,6 @@
 # Sentiment Analysis using Logistic Regression
 
-![Sentiment Analysis Banner](Screenshot%202024-10-26%20014037.png) <!-- Add a relevant image here -->
+![Sentiment Analysis Banner](Screenshot%202024-10-27%20004752.png) <!-- Add a relevant image here -->
 
 ## Table of Contents
 - [Overview](#overview)

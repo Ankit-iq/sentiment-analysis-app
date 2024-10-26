@@ -1,16 +1,20 @@
-FROM python:3.12-slim
+# Use the official Python image from the Docker Hub
+FROM python:3.12
 
+# Set the working directory inside the container
 WORKDIR /app
 
-# Install necessary libraries
-COPY requirements.txt ./
+# Copy the requirements file into the container
+COPY requirements.txt .
+
+# Install the dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Download NLTK data
-RUN python -m nltk.downloader punkt
-
+# Copy the rest of the application code into the container
 COPY . .
 
-EXPOSE 8501
+# Expose the port your app runs on
+EXPOSE 5000
 
-CMD ["streamlit", "run", "Sentiment_Analyzer_app.py"]
+# Command to run your app
+CMD ["flask", "run", "--host=0.0.0.0"]

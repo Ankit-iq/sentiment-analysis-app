@@ -4,17 +4,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sentiment Analysis using Logistic</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        /* Add your custom CSS styles here */
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Arial', sans-serif;
             text-align: center;
             margin: 20px;
-            background-color: #f0f0f0;
+            background-color: #ffffff; /* Default light mode */
+            color: #000000; /* Default text color */
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .dark-mode {
+            background-color: #1e1e1e; /* Dark background */
+            color: #e0e0e0; /* Light text color */
+        }
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            color: #ffa500; /* Neon orange */
         }
         .styled-button {
-            background-color: orange; /* Button color */
-            border: 2px solid blue; /* Button border color */
+            background-color: #ff4500; /* Bright orange */
+            border: 2px solid #ffa500; /* Neon orange border */
             color: white;
             padding: 10px 20px;
             font-size: 16px;
@@ -23,34 +34,73 @@
             transition: all 0.3s ease;
         }
         .styled-button:hover {
-            background-color: blue; /* Change color on hover */
+            background-color: #ffa500; /* Neon orange on hover */
         }
         textarea {
             display: block;
             margin: 0 auto;
             width: 80%;
-            border: 2px solid blue; /* Text area border color */
+            border: 2px solid #ffa500; /* Neon orange border */
             border-radius: 5px;
             padding: 10px;
             font-size: 16px;
+            background-color: #ffffff; /* Text area background in light mode */
+            color: #000000; /* Text color in light mode */
+            transition: border-color 0.3s;
         }
-        .emoji-container {
-            margin-top: 20px;
+        textarea:focus {
+            border-color: #ff4500; /* Bright orange on focus */
         }
-        .emoji {
-            font-size: 24px;
+        .rating {
+            direction: rtl; /* Right to left for star rating */
+            display: inline-block;
+            margin: 20px 0;
+        }
+        .rating input {
+            display: none; /* Hide radio buttons */
+        }
+        .rating label {
+            font-size: 30px;
+            color: #d3d3d3; /* Default star color (light gray) */
             cursor: pointer;
-            margin: 0 10px;
-            transition: transform 0.3s;
+            transition: color 0.3s;
         }
-        .emoji:hover {
-            transform: scale(1.2);
+        .rating input:checked ~ label,
+        .rating label:hover,
+        .rating label:hover ~ label {
+            color: #ffa500; /* Star color when checked or hovered */
+        }
+        footer {
+    position: fixed; /* Fixed position so it stays at the bottom */
+    bottom: 20px; /* Distance from the bottom */
+    right: 20px; /* Distance from the right */
+    padding: 10px;
+    background-color: rgba(46, 46, 46, 0.8); /* Dark footer background with some transparency */
+    border-radius: 5px; /* Rounded corners */
+    color: #ffa500; /* Neon orange text color */
+}
+
+        footer p {
+            margin: 5px 0;
+        }
+        .social-icons a {
+            margin: 0 10px;
+            font-size: 28px;
+            color: #ffa500; /* Neon orange */
+            transition: color 0.3s;
+        }
+        .social-icons a:hover {
+            color: #ff4500; /* Bright orange on hover */
         }
     </style>
 </head>
 <body>
     <h1>Sentiment Analysis using Logistic</h1>
-    <form action="/analyze" method="post">
+
+    <!-- Theme Toggle Button -->
+    <button class="styled-button" id="theme-toggle">Toggle Theme</button>
+
+    <form action="/" method="post">
         <textarea name="tweet" rows="5" placeholder="Enter a tweet to classify:">{{ tweet }}</textarea>
         <br>
         <button type="submit" class="styled-button">Analyze</button>
@@ -58,31 +108,80 @@
 
     {% if prediction %}
         <h2>The sentiment of the input is: <strong>{{ prediction }}</strong></h2>
-        <div class="emoji-container">
-            <span class="emoji" onclick="submitReaction('😊')">😊</span>
-            <span class="emoji" onclick="submitReaction('😐')">😐</span>
-            <span class="emoji" onclick="submitReaction('😢')">😢</span>
-            <span class="emoji" onclick="submitReaction('😠')">😠</span>
+
+        <!-- Rating System -->
+        <div class="rating">
+            <input type="radio" id="star1" name="rating" value="5" />
+            <label for="star1" title="5 stars">★</label>
+            <input type="radio" id="star2" name="rating" value="4" />
+            <label for="star2" title="4 stars">★</label>
+            <input type="radio" id="star3" name="rating" value="3" />
+            <label for="star3" title="3 stars">★</label>
+            <input type="radio" id="star4" name="rating" value="2" />
+            <label for="star4" title="2 stars">★</label>
+            <input type="radio" id="star5" name="rating" value="1" />
+            <label for="star5" title="1 star">★</label>
         </div>
+        <button class="styled-button" id="submit-rating">Submit Rating</button>
     {% endif %}
 
     <script>
-        function submitReaction(emoji) {
-            fetch('/react', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ reaction: emoji }),
-            })
-            .then(response => response.json())
-            .then(data => {
-                alert('Reaction recorded: ' + data.reaction);
-            })
-            .catch((error) => {
-                console.error('Error:', error);
-            });
+        // Theme Toggle Functionality
+        const toggleButton = document.getElementById('theme-toggle');
+
+        function toggleTheme() {
+            document.body.classList.toggle('dark-mode');
+
+            // Change textarea colors when toggling
+            const textarea = document.querySelector('textarea');
+            if (document.body.classList.contains('dark-mode')) {
+                textarea.style.backgroundColor = '#2e2e2e'; // Dark text area background
+                textarea.style.color = '#e0e0e0'; // Light text color
+            } else {
+                textarea.style.backgroundColor = '#ffffff'; // Light text area background
+                textarea.style.color = '#000000'; // Dark text color
+            }
+
+            // Save theme preference
+            localStorage.setItem('theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light');
         }
+
+        toggleButton.addEventListener('click', toggleTheme);
+
+        // Load saved theme
+        window.onload = () => {
+            if (localStorage.getItem('theme') === 'dark') {
+                document.body.classList.add('dark-mode');
+                // Set textarea colors for dark mode
+                document.querySelector('textarea').style.backgroundColor = '#2e2e2e';
+                document.querySelector('textarea').style.color = '#e0e0e0';
+            }
+        };
+
+        // Submit Rating Functionality
+        document.getElementById('submit-rating').addEventListener('click', function(event) {
+            event.preventDefault(); // Prevent form submission for now
+            const rating = document.querySelector('input[name="rating"]:checked');
+            if (rating) {
+                alert(`Thank you for rating: ${rating.value} star(s)!`);
+                // You can also send the rating to your server here using AJAX if needed
+            } else {
+                alert('Please select a rating before submitting.');
+            }
+        });
     </script>
+
+    <footer>
+        <p>Created by Ankit Kumar Bhuyan</p>
+        <div class="social-icons">
+            <a href="mailto:your_email@example.com" title="Email">
+                <i class="fas fa-envelope"></i>
+            </a>
+            <a href="https://www.linkedin.com/in/your_linkedin_username" target="_blank" title="LinkedIn">
+                <i class="fab fa-linkedin"></i>
+            </a>
+        </div>
+        <p>Contact: +1-234-567-8901</p> <!-- Replace with your contact number -->
+    </footer>
 </body>
 </html>

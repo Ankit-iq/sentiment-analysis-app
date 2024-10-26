@@ -61,10 +61,9 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Contact
 For any inquiries or questions, please reach out:
-- **Email**: [bhuyanankit048@gmail.com](mailto:bhuyanankit049@gmail.com)
+- **Email**: [bhuyanankit048@gmail.com](mailto:bhuyanankit048@gmail.com)
 - **GitHub**: [Ankit-iq](https://github.com/Ankit-iq)
 
 ---
 
 Thank you for checking out my sentiment analysis project! I hope you find it useful. Feel free to explore and contribute!
-

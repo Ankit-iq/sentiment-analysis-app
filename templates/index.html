@@ -47,6 +47,7 @@
             background-color: #ffffff; /* Text area background in light mode */
             color: #000000; /* Text color in light mode */
             transition: border-color 0.3s;
+            resize: vertical; /* Allow vertical resizing */
         }
         textarea:focus {
             border-color: #ff4500; /* Bright orange on focus */
@@ -71,15 +72,14 @@
             color: #ffa500; /* Star color when checked or hovered */
         }
         footer {
-    position: fixed; /* Fixed position so it stays at the bottom */
-    bottom: 20px; /* Distance from the bottom */
-    right: 20px; /* Distance from the right */
-    padding: 10px;
-    background-color: rgba(46, 46, 46, 0.8); /* Dark footer background with some transparency */
-    border-radius: 5px; /* Rounded corners */
-    color: #ffa500; /* Neon orange text color */
-}
-
+            position: fixed; /* Fixed position so it stays at the bottom */
+            bottom: 20px; /* Distance from the bottom */
+            right: 20px; /* Distance from the right */
+            padding: 10px;
+            background-color: rgba(46, 46, 46, 0.8); /* Dark footer background with some transparency */
+            border-radius: 5px; /* Rounded corners */
+            color: #ffa500; /* Neon orange text color */
+        }
         footer p {
             margin: 5px 0;
         }
@@ -98,10 +98,10 @@
     <h1>Sentiment Analysis using Logistic</h1>
 
     <!-- Theme Toggle Button -->
-    <button class="styled-button" id="theme-toggle">Toggle Theme</button>
+    <button class="styled-button" id="theme-toggle" aria-label="Toggle Theme">Toggle Theme</button>
 
     <form action="/" method="post">
-        <textarea name="tweet" rows="5" placeholder="Enter a tweet to classify:">{{ tweet }}</textarea>
+        <textarea name="tweet" rows="5" maxlength="280" placeholder="Enter a tweet to classify:">{{ tweet }}</textarea>
         <br>
         <button type="submit" class="styled-button">Analyze</button>
     </form>
@@ -126,45 +126,36 @@
     {% endif %}
 
     <script>
-        // Theme Toggle Functionality
         const toggleButton = document.getElementById('theme-toggle');
 
         function toggleTheme() {
             document.body.classList.toggle('dark-mode');
-
-            // Change textarea colors when toggling
             const textarea = document.querySelector('textarea');
             if (document.body.classList.contains('dark-mode')) {
-                textarea.style.backgroundColor = '#2e2e2e'; // Dark text area background
-                textarea.style.color = '#e0e0e0'; // Light text color
+                textarea.style.backgroundColor = '#2e2e2e';
+                textarea.style.color = '#e0e0e0';
             } else {
-                textarea.style.backgroundColor = '#ffffff'; // Light text area background
-                textarea.style.color = '#000000'; // Dark text color
+                textarea.style.backgroundColor = '#ffffff';
+                textarea.style.color = '#000000';
             }
-
-            // Save theme preference
             localStorage.setItem('theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light');
         }
 
         toggleButton.addEventListener('click', toggleTheme);
 
-        // Load saved theme
         window.onload = () => {
             if (localStorage.getItem('theme') === 'dark') {
                 document.body.classList.add('dark-mode');
-                // Set textarea colors for dark mode
                 document.querySelector('textarea').style.backgroundColor = '#2e2e2e';
                 document.querySelector('textarea').style.color = '#e0e0e0';
             }
         };
 
-        // Submit Rating Functionality
         document.getElementById('submit-rating').addEventListener('click', function(event) {
-            event.preventDefault(); // Prevent form submission for now
+            event.preventDefault();
             const rating = document.querySelector('input[name="rating"]:checked');
             if (rating) {
                 alert(`Thank you for rating: ${rating.value} star(s)!`);
-                // You can also send the rating to your server here using AJAX if needed
             } else {
                 alert('Please select a rating before submitting.');
             }
@@ -181,7 +172,7 @@
                 <i class="fab fa-linkedin"></i>
             </a>
         </div>
-        <p>Contact: +91-7205336313</p><!-- Replace with your contact number -->
+        <p>Contact: +91-7205336313</p>
         <p>(Feel free to ask for any queries)</p>
     </footer>
 </body>
